@@ -15,7 +15,7 @@ export const useStore = () => {
 export const useStoreDispatch = () => {
   const storeDispatch = useContext(StoreDispatchContext);
   if (!storeDispatch) {
-    throw new Error("can't access store out of provider");
+    throw new Error("can't access store out of providerr ");
   }
   return storeDispatch
 };
