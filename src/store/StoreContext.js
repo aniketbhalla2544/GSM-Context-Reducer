@@ -5,35 +5,31 @@ const StoreContext = createContext(null);
 const StoreDispatchContext = createContext(null);
 
 export const useStore = () => {
-  return useContext(StoreContext);
+  const store = useContext(StoreContext);
+  if (!store) {
+    throw new Error("can't access store out of provider");
+  }
+  return store
 };
 
 export const useStoreDispatch = () => {
-  return useContext(StoreDispatchContext);
+  const storeDispatch = useContext(StoreDispatchContext);
+  if (!storeDispatch) {
+    throw new Error("can't access store out of provider");
+  }
+  return storeDispatch
 };
 
-export function StoreContextProvider({ children }) {
-  const [store, dispatch] = useImmerReducer(storeReducer, initialStore);
-
-  return (
-    <StoreContext.Provider value={store}>
-      <StoreDispatchContext.Provider value={dispatch}>
-        {children}
-      </StoreDispatchContext.Provider>
-    </StoreContext.Provider>
-  );
-}
-
-function storeReducer(action, state) {
+function storeReducer(state, action) {
   const { type, payload } = action;
-
-  if (type === 'userPersonalInfo/ADD_USER') {
-    return state.userPersonalInfo.data.push(payload);
+  if (type === 'usersPersonalInfo/ADD_USER') {
+    state.usersPersonalInfo.data.push(payload);
+    return void state;
   }
 }
 
 const initialStore = {
-  userPersonalInfo: {
+  usersPersonalInfo: {
     data: [
       {
         name: 'aniket',
@@ -53,3 +49,18 @@ const initialStore = {
     ],
   },
 };
+
+export function StoreContextProvider({ children }) {
+  const [store, storeDispatch] = useImmerReducer(storeReducer, initialStore);
+
+  return (
+    <StoreContext.Provider value={store}>
+      <StoreDispatchContext.Provider value={storeDispatch}>
+        {children}
+      </StoreDispatchContext.Provider>
+    </StoreContext.Provider>
+  );
+}
+
+
+
